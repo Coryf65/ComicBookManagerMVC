@@ -17,10 +17,14 @@ namespace ComicBookShared.Models
         }
 
         public int Id { get; set; }
+        [Display(Name = "Series")]
         public int SeriesId { get; set; }
+        [Display(Name = "Issue Number")]
         public int IssueNumber { get; set; }
         public string Description { get; set; }
+        [Display(Name = "Published On")]        
         public DateTime PublishedOn { get; set; }
+        [Display(Name = "Average Rating")]
         public decimal? AverageRating { get; set; }
 
         public Series Series { get; set; }
