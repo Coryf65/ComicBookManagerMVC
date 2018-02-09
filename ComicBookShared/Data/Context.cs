@@ -19,7 +19,8 @@ namespace ComicBookShared.Data
             // This call to the SetInitializer method is used 
             // to configure EF to use our custom database initializer class
             // which contains our app's database seed data.
-            Database.SetInitializer(new DatabaseInitializer());
+            // Database.SetInitializer(new DatabaseInitializer());
+            // Now we get rid of this because we set up the connection Via the Web.Config file
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
