@@ -66,7 +66,7 @@ namespace ComicBookShared.Data
                     .Include(cb => cb.Artists.Select(a => a.Artist))
                     .Include(cb => cb.Artists.Select(a => a.Role))
                     .Where(cb => cb.Id == comicBookId)
-                    .SingleOrDefault();
+                    .SingleOrDefault();              
             }
         }
 
