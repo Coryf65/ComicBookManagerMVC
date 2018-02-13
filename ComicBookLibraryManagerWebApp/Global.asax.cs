@@ -9,6 +9,7 @@ namespace ComicBookLibraryManagerWebApp
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        //Called every time the web app is started 
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
