@@ -15,22 +15,16 @@ namespace ComicBookLibraryManagerWebApp.Controllers
     /// <summary>
     /// Controller for the "Comic Books" section of the website.
     /// </summary>
-    public class ComicBooksController : Controller
+    public class ComicBooksController : BaseController
     {
 
-        private Context _context = null;
-
-        public ComicBooksController()
-        {
-            _context = new Context(); // Intialize the private field to a instance of the context class
-        }
         public ActionResult Index()
         {
             // Include the "Series" navigation property.
             //var comicBooks = new List<ComicBook>();
 
             // TODO Get the comic books list.
-            var comicBooks = _context.ComicBooks
+            var comicBooks = Context.ComicBooks // Replaced all _context With Context Property
                     .Include(cb => cb.Series)
                     .OrderBy(cb => cb.Series.Title)
                     .ThenBy(cb => cb.IssueNumber)
@@ -50,7 +44,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             // var comicBook = new ComicBook();
 
             // TODO Get the comic book.
-            var comicBook = _context.ComicBooks
+            var comicBook = Context.ComicBooks
                     .Include(cb => cb.Series)
                     .Include(cb => cb.Artists.Select(a => a.Artist))
                     .Include(cb => cb.Artists.Select(a => a.Role))
@@ -73,7 +67,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             var viewModel = new ComicBooksAddViewModel();
 
             // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -89,8 +83,8 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 comicBook.AddArtist(viewModel.ArtistId, viewModel.RoleId);
 
                 // TODO Add the comic book to the DB.
-                _context.ComicBooks.Add(comicBook);
-                _context.SaveChanges();
+                Context.ComicBooks.Add(comicBook);
+                Context.SaveChanges();
 
                 TempData["Message"] = "Your comic book was successfully added!";
 
@@ -98,7 +92,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -111,7 +105,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             // TODO Get the comic book.
-            var comicBook = _context.ComicBooks.Where( cb => cb.Id == id).SingleOrDefault();
+            var comicBook = Context.ComicBooks.Where( cb => cb.Id == id).SingleOrDefault();
 
             if (comicBook == null)
             {
@@ -123,7 +117,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             {
                 ComicBook = comicBook
             };
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -138,8 +132,8 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 var comicBook = viewModel.ComicBook;
 
                 // TODO Update the comic book.
-                _context.Entry(comicBook).State = EntityState.Modified; // Changing the state to modified will cause a sql update statement
-                _context.SaveChanges();
+                Context.Entry(comicBook).State = EntityState.Modified; // Changing the state to modified will cause a sql update statement
+                Context.SaveChanges();
 
                 /* But will update all columns and sometimes you might not wwant to do that so in that case: 
                  * Let's look at a couple of approaches that you can use to avoid EF creating a SQL update statement 
@@ -175,7 +169,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -189,7 +183,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
 
             // TODO Get the comic book.          
             // Include the "Series" navigation property.
-            var comicBook = _context.ComicBooks
+            var comicBook = Context.ComicBooks
                 .Include( cb => cb.Series )
                 .Where( cb => cb.Id == id )
                 .SingleOrDefault();
@@ -207,8 +201,8 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         {
             // TODO Delete the comic book.
             var comicBook = new ComicBook() { Id = id };
-            _context.Entry(comicBook).State = EntityState.Deleted;
-            _context.SaveChanges();
+            Context.Entry(comicBook).State = EntityState.Deleted;
+            Context.SaveChanges();
 
             TempData["Message"] = "Your comic book was successfully deleted!";
 
@@ -228,7 +222,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             {
                 // Then make sure that the provided issue number is unique for the provided series.
                 // TODO Call method to check if the issue number is available for this comic book.
-                if (_context.ComicBooks.Any(cb => cb.Id  != comicBook.Id && 
+                if (Context.ComicBooks.Any(cb => cb.Id  != comicBook.Id && 
                                             cb.SeriesId == comicBook.SeriesId &&
                                             cb.IssueNumber == comicBook.IssueNumber) ) // .Any checks and does not returns true | false
                 {
