@@ -20,15 +20,9 @@ namespace ComicBookLibraryManagerWebApp.Controllers
 
         public ActionResult Index()
         {
-            // Include the "Series" navigation property.
-            //var comicBooks = new List<ComicBook>();
 
-            // TODO Get the comic books list.
-            var comicBooks = Context.ComicBooks // Replaced all _context With Context Property
-                    .Include(cb => cb.Series)
-                    .OrderBy(cb => cb.Series.Title)
-                    .ThenBy(cb => cb.IssueNumber)
-                    .ToList();
+            // Using the Repostitory 
+            var comicBooks = Repository.GetComicBooks();
 
             return View(comicBooks);
         }
@@ -40,16 +34,8 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // Include the "Series", "Artists.Artist", and "Artists.Role" navigation properties.
-            // var comicBook = new ComicBook();
-
             // TODO Get the comic book.
-            var comicBook = Context.ComicBooks
-                    .Include(cb => cb.Series)
-                    .Include(cb => cb.Artists.Select(a => a.Artist))
-                    .Include(cb => cb.Artists.Select(a => a.Role))
-                    .Where(cb => cb.Id == id)
-                    .SingleOrDefault();
+            var comicBook = Repository.GetComicBook((int)id);
 
             if (comicBook == null)
             {
@@ -66,8 +52,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         {
             var viewModel = new ComicBooksAddViewModel();
 
-            // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init(Context);
+            viewModel.Init(Repository);
 
             return View(viewModel);
         }
