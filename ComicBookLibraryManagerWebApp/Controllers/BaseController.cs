@@ -18,7 +18,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         public BaseController()
         {
             _context = new Context();
-            Repository = new Repository(_context);
+            Repository = new Repository(_context);// this method here works good for one Repository 
         }
        
         protected override void Dispose(bool disposing)
