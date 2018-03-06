@@ -149,6 +149,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ComicBookArtistsController.cs" />
     <Compile Include="Controllers\ComicBooksController.cs" />
+    <Compile Include="Controllers\ComicBookArtistsController_QueriesAndCommands.cs" />
     <Compile Include="Controllers\SeriesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -199,7 +200,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54109</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
