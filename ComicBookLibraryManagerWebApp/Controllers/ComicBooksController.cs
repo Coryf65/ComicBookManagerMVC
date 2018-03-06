@@ -17,12 +17,19 @@ namespace ComicBookLibraryManagerWebApp.Controllers
     /// </summary>
     public class ComicBooksController : BaseController
     {
+        private ComicBooksRepository _comicBooksRepository = null;
+
+        public ComicBooksController() //Default Construcor to insantiate an instance of the repository
+        {
+            _comicBooksRepository = new ComicBooksRepository(Context); // pass in the base controllers context property
+        }
 
         public ActionResult Index()
         {
 
-            // Using the Repostitory 
-            var comicBooks = Repository.GetComicBooks();
+            // Update the calls to use the new Repository
+            //var comicBooks = Repository.GetComicBooks();
+            var comicBooks = _comicBooksRepository.GetList();
 
             return View(comicBooks);
         }
@@ -35,7 +42,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             // TODO Get the comic book.
-            var comicBook = Repository.GetComicBook((int)id);
+            var comicBook = _comicBooksRepository.Get((int)id);
 
             if (comicBook == null)
             {
@@ -67,7 +74,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 var comicBook = viewModel.ComicBook;
                 comicBook.AddArtist(viewModel.ArtistId, viewModel.RoleId);
 
-                Repository.AddComicBook(comicBook);
+                _comicBooksRepository.Add(comicBook);
 
                 TempData["Message"] = "Your comic book was successfully added!";
 
@@ -88,7 +95,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             // TODO Get the comic book.
-            var comicBook = Repository.GetComicBook((int)id,
+            var comicBook = _comicBooksRepository.Get((int)id,
                 includeRelatedEntities: false);
 
             if (comicBook == null)
@@ -115,7 +122,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             {
                 var comicBook = viewModel.ComicBook;
 
-                Repository.UpdateComicBook(comicBook);
+                _comicBooksRepository.Update(comicBook);
                
                 TempData["Message"] = "Your comic book was successfully updated!";
 
@@ -136,7 +143,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
 
             // TODO Get the comic book.          
             // Include the "Series" navigation property.
-            var comicBook =Repository.GetComicBook((int)id);
+            var comicBook = _comicBooksRepository.Get((int)id);
 
             if (comicBook == null)
             {
@@ -149,7 +156,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Repository.DeleteComicBook(id);
+            _comicBooksRepository.Delete(id);
 
             TempData["Message"] = "Your comic book was successfully deleted!";
 
@@ -168,7 +175,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 ModelState.IsValidField("ComicBook.IssueNumber"))
             {
                 // Then make sure that the provided issue number is unique
-                if (Repository.ComicBookSeriesHasIssueNumber(comicBook.Id, comicBook.SeriesId, comicBook.IssueNumber)) 
+                if (_comicBooksRepository.ComicBookSeriesHasIssueNumber(comicBook.Id, comicBook.SeriesId, comicBook.IssueNumber)) 
                 {
                     ModelState.AddModelError("ComicBook.IssueNumber",
                         "The provided Issue Number has already been entered for the selected Series.");

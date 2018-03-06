@@ -16,11 +16,18 @@ namespace ComicBookLibraryManagerWebApp.Controllers
     /// </summary>
     public class ComicBookArtistsController : BaseController
     {
+
+        private ComicBooksRepository _comicBooksRepository = null;
+
+        public ComicBookArtistsController()
+        {
+            _comicBooksRepository = new ComicBooksRepository(Context);
+        }
      
         public ActionResult Add(int comicBookId)
         {
             // TODO Get the comic book.          
-            var comicBook = Repository.GetComicBook(comicBookId);
+            var comicBook = _comicBooksRepository.Get(comicBookId);
 
             if (comicBook == null)
             {
@@ -63,7 +70,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             // TODO Prepare the view model for the view.
             // TODO Get the comic book.
             // Include the "Series" navigation property.
-            viewModel.ComicBook = Repository.GetComicBook(viewModel.ComicBookId);
+            viewModel.ComicBook = _comicBooksRepository.Get(viewModel.ComicBookId);
             viewModel.Init(Repository);
 
             return View(viewModel);
@@ -111,32 +118,12 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             {
                 // Then make sure that this artist and role combination 
                 // doesn't already exist for this comic book.
-                if (Repository.ComicBookHasArtistRoleCombination(viewModel.ComicBookId, viewModel.ArtistId, viewModel.RoleId))
+                if (_comicBooksRepository.ComicBookHasArtistRoleCombination(viewModel.ComicBookId, viewModel.ArtistId, viewModel.RoleId))
                 {
                     ModelState.AddModelError("ArtistId",
                         "This artist and role combination already exists for this comic book.");
                 }
             }
-        }
-
-        //Eventually get rid of due to DRY
-        private bool _disposed = false;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                _context.Dispose();
-            }
-
-            _disposed = true;
-
-            base.Dispose(disposing);
         }
 
     }
