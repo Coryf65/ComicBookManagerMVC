@@ -8,40 +8,40 @@ using System.Threading.Tasks;
 
 namespace ComicBookShared.Data
 {
-    public class ComicBookArtistsRepository
+    public class ComicBookArtistsRepository : BaseRepository<ComicBookArtist>
     {
 
-        private Context _context = null;
+        //private Context _context = null;
 
-        public ComicBookArtistsRepository(Context context)
+        public ComicBookArtistsRepository(Context context) : base(context)
         {
-            _context = context;
-        }
+            //_context = context;
+        }       
 
-        // Get the Comic Book Artist
-        public ComicBookArtist Get(int id)
+        public override ComicBookArtist Get(int id, bool includeRelatedEntities = true)
         {
-            return _context.ComicBookArtists
-                .Include(cba => cba.Artist)
-                .Include(cba => cba.Role)
-                .Include(cba => cba.ComicBook.Series)
+            var comicBookArtists = Context.ComicBookArtists.AsQueryable();
+
+            if (includeRelatedEntities)
+            {
+                comicBookArtists = comicBookArtists
+                    .Include(cba => cba.Artist)
+                    .Include(cba => cba.Role)
+                    .Include(cba => cba.ComicBook.Series);
+            }
+
+            return comicBookArtists
+                
                 .Where(cba => cba.Id == id)
                 .SingleOrDefault();
         }
 
-        // Add a Comic Book Artist
-        public void Add(ComicBookArtist comicBookArtist)
+        /// <summary>
+        /// Not using yet so it will throw
+        /// </summary>
+        public override IList<ComicBookArtist> GetList()
         {
-            _context.ComicBookArtists.Add(comicBookArtist);
-            _context.SaveChanges();
-        }
-
-        // Delete a Comic Book Artist
-        public void Delete(int id)
-        {
-            var comicBookArtist = new ComicBookArtist() { Id = id };
-            _context.Entry(comicBookArtist).State = EntityState.Deleted;
-            _context.SaveChanges();
+            throw new NotImplementedException();
         }
     }
 }
