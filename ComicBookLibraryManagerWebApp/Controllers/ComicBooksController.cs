@@ -18,10 +18,12 @@ namespace ComicBookLibraryManagerWebApp.Controllers
     public class ComicBooksController : BaseController
     {
         private ComicBooksRepository _comicBooksRepository = null;
+        private SeriesRepository _seriesRepository = null;
 
         public ComicBooksController() //Default Construcor to insantiate an instance of the repository
         {
             _comicBooksRepository = new ComicBooksRepository(Context); // pass in the base controllers context property
+            _seriesRepository = new SeriesRepository(Context); // pass in the base controllers context property
         }
 
         public ActionResult Index()
@@ -59,7 +61,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         {
             var viewModel = new ComicBooksAddViewModel();
 
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _seriesRepository);
 
             return View(viewModel);
         }
@@ -82,7 +84,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _seriesRepository);
 
             return View(viewModel);
         }
@@ -108,7 +110,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             {
                 ComicBook = comicBook
             };
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _seriesRepository);
 
             return View(viewModel);
         }
@@ -129,7 +131,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _seriesRepository);
 
             return View(viewModel);
         }
