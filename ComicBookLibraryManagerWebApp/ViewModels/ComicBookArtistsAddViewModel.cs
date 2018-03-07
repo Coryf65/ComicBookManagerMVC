@@ -37,10 +37,10 @@ namespace ComicBookLibraryManagerWebApp.ViewModels
         /// </summary>
         /// accepts an instance of the repository class
         /// and now calls the updated methods
-        public void Init(Repository repository)
+        public void Init(Repository repository, ArtistsRepository artistsRepository)
         {
             ArtistSelectListItems = new SelectList(
-                repository.GetArtists(), 
+                artistsRepository.GetList(),
                 "Id", "Name");
             RoleSelectListItems = new SelectList(
                 repository.GetRoles(), 

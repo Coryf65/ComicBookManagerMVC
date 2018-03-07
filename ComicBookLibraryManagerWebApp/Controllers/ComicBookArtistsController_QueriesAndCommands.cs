@@ -9,11 +9,18 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using ComicBookShared.Data.Queries;
 using ComicBookShared.Data.Commands;
+using ComicBookShared.Data;
 
 namespace ComicBookLibraryManagerWebApp.Controllers
 {
     public class ComicBookArtistsController : BaseController ///_QueriesAndCommands
     {
+        private ArtistsRepository _artistsRepository = null;
+
+        public ComicBookArtistsController() //Default Construcor to insantiate an instance of the repository
+        {          
+            _artistsRepository = new ArtistsRepository(Context); // pass in the base controllers context property
+        }
 
         public ActionResult Add(int comicBookId)
         {
@@ -30,7 +37,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 ComicBook = comicBook
             };
 
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _artistsRepository);
 
             return View(viewModel);
         }
@@ -50,7 +57,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
             viewModel.ComicBook = new GetComicBookQuery(Context).Execute(viewModel.ComicBookId);
-            viewModel.Init(Repository);
+            viewModel.Init(Repository, _artistsRepository);
 
             return View(viewModel);
         }
